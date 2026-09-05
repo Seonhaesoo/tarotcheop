@@ -1,0 +1,10 @@
+{
+  "name": "tarotcheop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "타로첩 — 78장 타로 카드 의미 사전 (사주첩 자매 사이트)",
+  "scripts": {
+    "build": "node tools/build.mjs",
+    "serve": "node server.js"
+  }
+}
