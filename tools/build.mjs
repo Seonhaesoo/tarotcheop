@@ -132,9 +132,9 @@ ${ld}
 <div class="app">
 <nav class="family-bar" aria-label="첩 시리즈">
   <a class="fb-item" href="${SAJU}/" title="사주첩 — 사주풀이"><i aria-hidden="true">四</i>사주첩</a>
-  <a class="fb-item" href="${SAENGIL}/" title="생일첩 — 생년월일로 보는 나이·띠"><i aria-hidden="true">生</i>생일첩</a>
-  <a class="fb-item" href="${DREAM}/" title="꿈첩 — 상황별 꿈해몽"><i aria-hidden="true">夢</i>꿈첩</a>
-  <a class="fb-item on" href="/" aria-current="page"><i aria-hidden="true">占</i>타로첩</a>
+  <a class="fb-item" href="${SAENGIL}/" title="생일첩 — 생년월일로 보는 나이·띠"><i aria-hidden="true">生</i>생일 사전</a>
+  <a class="fb-item" href="${DREAM}/" title="꿈첩 — 상황별 꿈해몽"><i aria-hidden="true">夢</i>꿈해몽</a>
+  <a class="fb-item on" href="/" aria-current="page"><i aria-hidden="true">占</i>타로</a>
 </nav>
 <header class="hdr">
   <a class="brand" href="/">${seal('占', 26)}<span class="brand-name">타로첩</span></a>
