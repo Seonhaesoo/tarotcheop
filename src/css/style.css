@@ -17,16 +17,20 @@ a { color: var(--seal-deep); }
 @media (max-width: 480px) { .app { padding: 14px 14px 36px; } }
 
 .hdr { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--line); margin-bottom: 14px; }
-.brand-row { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .brand { display: flex; align-items: center; gap: 9px; text-decoration: none; color: inherit; }
 .brand-name { font-family: var(--serif); font-size: 17px; font-weight: 700; letter-spacing: 0.04em; }
 .nav { display: flex; gap: 14px; flex-wrap: wrap; }
 .nav a { font-size: 13px; color: var(--muted); text-decoration: none; }
 .nav a:hover { color: var(--seal); }
-.sis-chip { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 9px 0 5px; border: 1px solid var(--line); border-radius: 999px; background: var(--card); font-family: var(--serif); font-size: 12px; font-weight: 600; letter-spacing: 0.02em; color: var(--muted); text-decoration: none; white-space: nowrap; transition: border-color 0.15s ease, color 0.15s ease; }
-.sis-chip svg { flex: none; }
-.sis-chip:hover { color: var(--ink); border-color: var(--ink); }
-@media (max-width: 420px) { .sis-chip span { display: none; } .sis-chip { padding: 0 5px; } }
+/* 첩 시리즈 메뉴바 — 헤더 위 한 줄(자매 사이트), 사주첩과 같은 모양. 칩을 브랜드 옆에 늘어놓으면 좁은 화면에서 넘쳐서 바꿈 */
+.family-bar { display: flex; align-items: stretch; height: 38px; margin: -18px -18px 14px; padding: 0 10px; background: #EEE6D6; border-bottom: 1px solid var(--line-soft); overflow-x: auto; scrollbar-width: none; }
+.family-bar::-webkit-scrollbar { display: none; }
+.fb-item { display: inline-flex; align-items: center; gap: 6px; padding: 0 8px; font-family: var(--serif); font-size: 12.5px; font-weight: 500; letter-spacing: 0.02em; color: var(--muted); text-decoration: none; white-space: nowrap; border-bottom: 2px solid transparent; }
+.fb-item i { font-style: normal; font-size: 10px; font-weight: 600; line-height: 16px; width: 16px; height: 16px; text-align: center; border-radius: 4px; background: #C9BFAE; color: #FFFDF9; }
+.fb-item:hover { color: var(--ink); }
+.fb-item.on { color: var(--ink); font-weight: 700; border-bottom-color: var(--seal); }
+.fb-item.on i { background: var(--seal); }
+@media (max-width: 480px) { .family-bar { margin: -14px -14px 12px; } }
 
 /* 검색 */
 .search { position: relative; margin: 0 0 18px; }

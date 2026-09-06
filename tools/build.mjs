@@ -130,13 +130,14 @@ ${ld}
 </head>
 <body>
 <div class="app">
+<nav class="family-bar" aria-label="첩 시리즈">
+  <a class="fb-item" href="${SAJU}/" title="사주첩 — 사주풀이"><i aria-hidden="true">四</i>사주첩</a>
+  <a class="fb-item" href="${SAENGIL}/" title="생일첩 — 생년월일로 보는 나이·띠"><i aria-hidden="true">生</i>생일첩</a>
+  <a class="fb-item" href="${DREAM}/" title="꿈첩 — 상황별 꿈해몽"><i aria-hidden="true">夢</i>꿈첩</a>
+  <a class="fb-item on" href="/" aria-current="page"><i aria-hidden="true">占</i>타로첩</a>
+</nav>
 <header class="hdr">
-  <div class="brand-row">
-    <a class="brand" href="/">${seal('占', 26)}<span class="brand-name">타로첩</span></a>
-    <a class="sis-chip" href="${SAJU}/" title="사주첩 — 사주풀이">${seal('四', 17)}<span>사주첩</span></a>
-    <a class="sis-chip" href="${SAENGIL}/" title="생일첩 — 생년월일로 보는 나이·띠">${seal('生', 17)}<span>생일첩</span></a>
-    <a class="sis-chip" href="${DREAM}/" title="꿈첩 — 상황별 꿈해몽">${seal('夢', 17)}<span>꿈첩</span></a>
-  </div>
+  <a class="brand" href="/">${seal('占', 26)}<span class="brand-name">타로첩</span></a>
   <nav class="nav"><a href="/major/">메이저</a><a href="/c/">78장</a><a href="/yesno/">예·아니오</a><a href="/draw/">카드 뽑기</a></nav>
 </header>
 ${o.noSearch ? '' : SEARCH}
