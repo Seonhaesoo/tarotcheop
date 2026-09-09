@@ -145,7 +145,7 @@ ${ld}
 ${o.noSearch ? '' : SEARCH}
 ${o.body}
 <footer>
-  <div class="frow"><span>© 타로첩 · <a href="${SAJU}/">사주첩</a> 자매 사이트</span><nav><a href="/guide/">타로 기초</a><a href="/about/">소개</a><a href="/terms/">이용약관</a><a href="/privacy/">개인정보</a></nav></div>
+  <div class="frow"><span>© 타로첩 · <a href="${SAJU}/">사주첩</a> · <a href="https://bodyzip.com/">바디집</a> 자매 사이트</span><nav><a href="/guide/">타로 기초</a><a href="/about/">소개</a><a href="/terms/">이용약관</a><a href="/privacy/">개인정보</a></nav></div>
   <p class="fnote">타로 해석은 라이더 웨이트 전통을 바탕으로 한 참고용 콘텐츠입니다. 카드는 정해진 미래가 아니라 지금의 상황을 비추는 거울이며, 중요한 결정의 근거로 삼지 마세요.</p>
 </footer>
 </div>
