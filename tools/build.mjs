@@ -116,6 +116,7 @@ function shell(o) {
 <meta charset="utf-8">
 ${GA}
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="max-image-preview:large">
 <title>${esc(o.title)}</title>
 <meta name="description" content="${esc(o.desc)}">
 <link rel="canonical" href="${SITE}${o.url}">
