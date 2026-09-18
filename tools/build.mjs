@@ -117,6 +117,7 @@ function shell(o) {
 ${GA}
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="max-image-preview:large">
+<link rel="alternate" type="application/rss+xml" title="새 글" href="/rss.xml">
 <title>${esc(o.title)}</title>
 <meta name="description" content="${esc(o.desc)}">
 <link rel="canonical" href="${SITE}${o.url}">
@@ -484,3 +485,6 @@ fs.writeFileSync(path.join(OUT, 'CNAME'), 'tarot.sajucheop.com\n');
 fs.writeFileSync(path.join(OUT, 'favicon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"/><text x="15" y="20.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="15" font-weight="700" fill="#F6F1E8">占</text></svg>`);
 fs.cpSync(SRC, OUT, { recursive: true });
 console.log(`타로첩 빌드 완료: 카드 78, 페이지 ${urls.length} · 오늘의 카드 ${todayCard.name}${todayRev ? ' 역방향' : ''}`);
+
+/* RSS 피드 — 네이버 서치어드바이저에 한 번 등록하면 새 글을 알아서 가져간다 (tools/feeds.mjs) */
+await import('./feeds.mjs');
