@@ -36,6 +36,7 @@ const dayIndex = Math.floor(Date.UTC(today.y, today.m - 1, today.d) / 86400000);
 const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const paras = (s) => String(s).split(/\n\s*\n/).map((p) => `<p>${esc(p.trim())}</p>`).join('\n');
 const first = (s) => { const m = String(s).match(/^.*?[.!?](?=\s|$)/); return (m ? m[0] : String(s)).trim(); };
+const firstN = (s, n) => { const m = String(s).match(/[\s\S]*?[.!?](?=\s|$)/g); return m ? m.slice(0, n).map((x) => x.trim()).join(' ') : String(s).trim(); };
 const cUrl = (c) => `/c/${c.slug}/`;
 const bySlug = Object.fromEntries(CARDS.map((c) => [c.slug, c]));
 /* 주제 허브에 먼저 보일 카드 */
@@ -95,6 +96,9 @@ function cardSvg(c, cls) {
     : `<g style="color:${color}" transform="translate(0 10)">${GLYPH[c.suit]}</g>`;
   return `<svg class="${cls || 'cf'}" viewBox="0 0 200 320" role="img" aria-label="${esc(c.name)} 카드"><rect x="4" y="4" width="192" height="312" rx="14" fill="#FFFDF8" stroke="#211C15" stroke-width="3"/><rect x="14" y="14" width="172" height="292" rx="9" fill="none" stroke="${color}" stroke-width="1.5"/><text x="100" y="46" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="${c.arcana === 'major' ? 18 : 15}" font-weight="600" fill="#211C15">${esc(top)}</text>${center}<text x="100" y="262" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="19" font-weight="700" fill="#211C15">${esc(c.name)}</text><text x="100" y="286" text-anchor="middle" font-family="'Noto Sans KR', sans-serif" font-size="11" fill="#8B8070">${esc(c.en)}</text></svg>`;
 }
+/* 카드 뒷면 — src/js/draw.js 의 BACK 과 같은 모양 (격자는 CSS, 낙관·별·달은 id 없는 SVG) */
+const BACK = '<span class="tb"><svg viewBox="0 0 200 320" aria-hidden="true" focusable="false"><circle cx="100" cy="160" r="50" fill="#211C15" stroke="#D9C9A3" stroke-width="2"/><circle cx="100" cy="160" r="42" fill="none" stroke="#8C7A55" stroke-width="1"/><rect x="78" y="138" width="44" height="44" rx="7" fill="#B8382D"/><text x="100" y="171" text-anchor="middle" font-family="\'Noto Serif KR\', serif" font-size="29" font-weight="700" fill="#F6F1E8">占</text><path d="M100 44 L104.7 55.5 116 56.6 107.5 64.2 110 75.3 100 69.5 90 75.3 92.5 64.2 84 56.6 95.3 55.5Z" fill="#D9C9A3"/><path d="M100 252 A16 16 0 0 0 100 284 A20 20 0 0 1 100 252 Z" fill="#D9C9A3"/></svg></span>';
+const cardInner = () => `<span class="tflip"><span class="tface tbk">${BACK}</span><span class="tface tfr"></span></span>`;
 const seal = (ch, size) => `<svg width="${size}" height="${size}" viewBox="0 0 30 30" aria-hidden="true"><rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"/><text x="15" y="20.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="15" font-weight="700" fill="#F6F1E8">${ch}</text></svg>`;
 
 /* ---------- 오늘의 카드 ---------- */
@@ -383,15 +387,27 @@ ${groups.map(([name, list]) => `<section><h2>${name}</h2><table class="yntable">
   const body = `
 <div class="overline">타로첩</div>
 <h1>타로 카드 뽑기 — 원카드 · 쓰리카드 · 예아니오</h1>
-<p class="lead">질문을 마음에 두고 뽑으세요. 카드는 78장 가운데 무작위로 나오며, 역방향은 셋 중 하나 정도의 확률로 섞입니다. 뽑은 카드는 의미 페이지로 바로 이어집니다.</p>
-<div class="draw" id="draw">
-  <div class="draw-modes" role="tablist"><button data-mode="one" class="on">한 장</button><button data-mode="three">세 장 (과거·현재·미래)</button><button data-mode="yesno">예·아니오</button></div>
-  <label class="draw-q"><span>질문 (선택)</span><input type="text" id="draw-q" maxlength="60" placeholder="예: 이 일을 시작해도 될까?"></label>
-  <button class="btn big" id="draw-go">카드 뽑기</button>
-  <div class="draw-result" id="draw-result" hidden></div>
+<p class="lead">질문을 마음에 두고 카드를 섞은 뒤, 엎어 놓은 스물한 장 가운데 마음이 가는 카드를 직접 고르세요. 고른 카드를 한 장씩 뒤집으면 정방향·역방향 의미와 주제별 해석이 이어집니다.</p>
+<div class="tapp" id="tarot-app">
+  <div class="t-ctrl">
+    <div class="t-modes" role="group" aria-label="뽑는 방식"><button type="button" data-mode="one" class="on" aria-pressed="true">한 장</button><button type="button" data-mode="three" aria-pressed="false">세 장 · 과거·현재·미래</button><button type="button" data-mode="yesno" aria-pressed="false">예·아니오</button></div>
+    <div class="t-topics" role="group" aria-label="무엇에 대해"><span>주제</span>${[['all', '전체'], ['love', '연애'], ['money', '재물'], ['work', '직장'], ['health', '건강']].map(([k, v], i) => `<button type="button" data-topic="${k}"${i ? '' : ' class="on"'} aria-pressed="${i ? 'false' : 'true'}">${v}</button>`).join('')}</div>
+    <label class="t-q"><span>질문 (선택)</span><input type="text" id="t-q" maxlength="60" placeholder="예: 이 일을 시작해도 될까?" autocomplete="off"></label>
+  </div>
+  <div class="t-shared" hidden><b>공유받은 결과예요.</b> 나도 질문을 떠올리고 직접 골라 보세요. <button type="button" class="btn ghost" id="t-fresh">나도 뽑기</button></div>
+  <div class="t-slots" hidden></div>
+  <div class="t-stage">
+    <div class="t-deck" aria-hidden="true">${Array.from({ length: 5 }, () => `<span class="tdk">${BACK}</span>`).join('')}</div>
+    <div class="t-spread" role="group" aria-label="엎어 둔 카드"></div>
+  </div>
+  <p class="t-status" aria-live="polite">질문을 마음에 두고 카드를 섞으세요.</p>
+  <div class="t-go"><button type="button" class="btn big" id="t-go">카드 섞기</button></div>
+  <div class="t-reads"></div>
+  <div class="t-final" hidden></div>
+  <noscript><p class="sub">카드 뽑기는 자바스크립트가 켜져 있어야 동작합니다. <a href="/daily/">오늘의 카드</a>나 <a href="/c/">78장 사전</a>을 보세요.</p></noscript>
 </div>
-<section><h2>어떻게 읽나요</h2><ul class="meta"><li><b>한 장</b> — 오늘 하루나 질문 하나에. 카드의 정·역방향 의미를 그대로 읽습니다.</li><li><b>세 장</b> — 왼쪽부터 과거(원인)·현재(상황)·미래(흐름). 세 장이 한 이야기가 되게 이어 읽습니다.</li><li><b>예·아니오</b> — 한 장의 예/아니오/보류 판단과 그 이유를 봅니다. 역방향은 답을 약하게 하거나 뒤집습니다.</li></ul><p>배열법이 더 궁금하면 <a href="/spreads/">타로 배열법 안내</a>, 처음이라면 <a href="/guide/">타로 기초</a>를 먼저 보세요.</p></section>
-<p class="note">뽑기는 브라우저에서만 이루어지며 질문과 결과는 저장되지 않습니다.</p>`;
+<section><h2>어떻게 뽑고 읽나요</h2><ul class="meta"><li><b>섞고 고르기</b> — 카드 섞기를 누르면 78장 가운데 스물한 장이 엎어진 채 펼쳐집니다. 질문을 떠올리며 마음이 가는 카드를 고르세요.</li><li><b>한 장</b> — 오늘 하루나 질문 하나에. 뒤집은 카드의 뜻과 한 줄 조언을 봅니다.</li><li><b>세 장</b> — 고른 순서대로 과거(원인)·현재(상황)·미래(흐름). 세 장이 한 이야기가 되게 이어 읽습니다.</li><li><b>예·아니오</b> — 한 장의 예/아니오/보류 판단과 그 이유. 역방향은 답을 약하게 하거나 미룹니다.</li><li><b>주제</b> — 연애·재물·직장·건강을 고르면 그 주제의 해석으로 읽습니다. 뒤집은 뒤에 바꿔도 바로 다시 읽어요.</li></ul><p>배열법이 더 궁금하면 <a href="/spreads/">타로 배열법 안내</a>, 처음이라면 <a href="/guide/">타로 기초</a>를 먼저 보세요.</p></section>
+<p class="note">뽑기는 브라우저에서만 이루어지며 질문은 어디에도 보내거나 저장하지 않습니다. 공유 링크에는 뽑은 카드만 담기고 질문은 담기지 않습니다.</p>`;
   add(url, shell({ url, title: '타로 카드 뽑기 — 원카드·쓰리카드·예아니오 무료 타로', desc: '질문을 두고 타로 카드를 뽑아 보세요. 한 장, 세 장(과거·현재·미래), 예·아니오. 뽑은 카드의 정방향·역방향 의미로 바로 이어집니다.', body, jsonld: { '@context': 'https://schema.org', '@type': 'WebApplication', name: '타로첩 카드 뽑기', url: SITE + url, applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' } }, extraScript: '<script src="/js/draw.js" defer></script>' }));
 }
 
@@ -434,12 +450,18 @@ ${groups.map(([name, list]) => `<section><h2>${name}</h2><table class="yntable">
   <p>타로 카드 78장의 의미를 정방향·역방향, 연애·재물·직장·건강별로 풀어 둔 사전입니다. 오늘의 카드를 보고, 한 장을 뽑고, 나온 카드의 뜻을 바로 읽으세요.</p>
   <div class="hero-cta"><a class="btn" href="/draw/">카드 뽑기</a><a class="btn ghost" href="/c/">78장 사전</a><a class="btn ghost" href="/yesno/">예·아니오</a></div>
 </section>
+<section class="tmini" id="tarot-mini" aria-labelledby="tmini-h">
+  <h2 id="tmini-h">마음이 가는 카드 한 장</h2>
+  <p class="sub">질문 하나를 떠올리고, 일곱 장 가운데 끌리는 카드를 눌러 보세요.</p>
+  <div class="tm-fan" role="group" aria-label="엎어 둔 카드 일곱 장">${[-3, -2, -1, 0, 1, 2, 3].map((k) => `<button type="button" class="tcard" data-k="${k}" style="--k:${k}" aria-label="엎어 둔 카드 ${k + 4}번">${cardInner()}</button>`).join('')}</div>
+  <div class="tm-res" hidden></div>
+</section>
 ${todayBox()}
 <section><h2><a href="/major/">메이저 아르카나 22장</a></h2>${grid(majors)}</section>
 <section><h2>마이너 아르카나 — 네 수트</h2><div class="suits">${Object.values(SUITS).map((s) => `<a class="suit" href="/${s.slug}/" style="--sc:${s.color}"><svg viewBox="0 0 200 320" aria-hidden="true"><g style="color:${s.color}" transform="translate(0 40)">${GLYPH[s.slug]}</g></svg><b>${s.ko}</b><span>${esc(s.alt)} · ${s.el}</span><small>${esc(s.theme)}</small></a>`).join('')}</div></section>
 <section><h2>질문별로 보기</h2><div class="hubs">${TOPICS.map((tp) => `<a href="/${tp.key}/"><b>${tp.title}</b><span>${tp.desc} 질문에 나온 카드의 뜻</span></a>`).join('')}<a href="/yesno/"><b>예·아니오</b><span>78장 판단표</span></a><a href="/spreads/"><b>배열법</b><span>원카드·쓰리카드·켈틱 크로스</span></a><a href="/guide/"><b>타로 기초</b><span>구조·역방향·질문법</span></a><a href="/daily/"><b>오늘의 카드</b><span>매일 새벽 한 장</span></a></div></section>
 <section class="about"><h2>타로첩은</h2><p>타로첩(占帖)은 <a href="${SAJU}/">사주첩</a>이 만든 네 번째 자매 사이트입니다. 첩(帖)은 글을 모아 묶은 책, 점(占)은 비춰 보는 일. 라이더 웨이트 덱 78장을 기준으로 카드마다 그림 묘사, 정방향·역방향 의미, 네 가지 주제 해석, 예·아니오 판단, 한 줄 조언을 한 장씩 담았습니다. 검색창에 카드 이름을 치거나 위의 목록에서 고르세요.</p></section>`;
-  add('/', shell({ url: '/', title: '타로첩 — 타로 카드 78장 의미 사전, 오늘의 카드와 카드 뽑기', desc: '타로 카드 78장 정방향·역방향 의미, 연애·재물·직장·건강별 해석, 예·아니오 판단표, 오늘의 카드, 무료 카드 뽑기. 사주첩이 만든 타로 사전.', body, jsonld: { '@context': 'https://schema.org', '@type': 'WebSite', name: '타로첩', url: SITE + '/', potentialAction: { '@type': 'SearchAction', target: SITE + '/c/?q={q}', 'query-input': 'required name=q' } } }));
+  add('/', shell({ url: '/', title: '타로첩 — 타로 카드 78장 의미 사전, 오늘의 카드와 카드 뽑기', desc: '타로 카드 78장 정방향·역방향 의미, 연애·재물·직장·건강별 해석, 예·아니오 판단표, 오늘의 카드, 무료 카드 뽑기. 사주첩이 만든 타로 사전.', body, jsonld: { '@context': 'https://schema.org', '@type': 'WebSite', name: '타로첩', url: SITE + '/', potentialAction: { '@type': 'SearchAction', target: SITE + '/c/?q={q}', 'query-input': 'required name=q' } }, extraScript: '<script src="/js/draw.js" defer></script>' }));
 }
 
 /* ---------- 정적 페이지 ---------- */
@@ -453,7 +475,8 @@ ${todayBox()}
 
 /* ---------- 검색 색인 · 뽑기 데이터 · 사이트맵 · robots · 정적 파일 ---------- */
 fs.writeFileSync(path.join(OUT, 'index.json'), JSON.stringify(CARDS.map((c) => ({ t: c.name, e: c.en, u: cUrl(c), k: [c.en].concat(c.alt || [], c.kw.up.slice(0, 3)).join(' '), g: groupOf(c) }))));
-fs.writeFileSync(path.join(OUT, 'cards.json'), JSON.stringify(CARDS.map((c) => ({ s: c.slug, n: c.name, e: c.en, g: groupOf(c), r: rankLabel(c), a: c.arcana, su: c.suit || null, up: first(c.up), rv: first(c.rev), ku: c.kw.up, kr: c.kw.rev, yn: c.yesno, ynn: c.yesnoNote, ad: c.advice }))));
+fs.writeFileSync(path.join(OUT, 'cards.json'), JSON.stringify(CARDS.map((c) => ({ s: c.slug, n: c.name, e: c.en, g: groupOf(c), r: rankLabel(c), a: c.arcana, su: c.suit || null, up: firstN(c.up, 2), rv: firstN(c.rev, 2), ku: c.kw.up, kr: c.kw.rev, yn: c.yesno, ynn: c.yesnoNote, ad: c.advice,
+  t: Object.fromEntries(TOPICS.map((tp) => [tp.key, [firstN(c[tp.key].up, 2), firstN(c[tp.key].rev, 2)]])) }))));
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'].concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${BUILD_ISO}</lastmod>${u === '/daily/' || u === '/' ? '<changefreq>daily</changefreq>' : ''}</url>`)).concat(['</urlset>', '']).join('\n'));
 fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
 fs.writeFileSync(path.join(OUT, 'CNAME'), 'tarot.sajucheop.com\n');

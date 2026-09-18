@@ -78,29 +78,10 @@
 .yntable td a { text-decoration: none; font-weight: 600; }
 .sub { font-size: 13px; color: var(--muted); }
 .about p { font-size: 14px; color: var(--ink-body); }
-.draw { padding: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; margin: 12px 0; }
-.draw-modes { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
-.draw-modes button { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); font-size: 13px; cursor: pointer; font-family: var(--sans); color: var(--ink-body); }
-.draw-modes button.on { background: var(--ink); color: #F6F1E8; border-color: var(--ink); }
-.draw-q { display: block; margin-bottom: 12px; font-size: 12.5px; color: var(--muted); }
-.draw-q input { display: block; width: 100%; margin-top: 4px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; font-family: var(--sans); background: var(--paper); box-sizing: border-box; }
-.draw-result { margin-top: 16px; }
-.draw-q-echo { font-size: 13px; color: var(--muted); margin-bottom: 10px; }
-.dcards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
-.dcard { text-align: center; }
-.dcard .pos { font-size: 11.5px; color: var(--muted); letter-spacing: 0.04em; margin-bottom: 4px; }
-.dcard .cf { max-width: 150px; margin: 0 auto; }
-.dcard.flip .cf { transform: rotate(180deg); }
-.dcard h3 { font-family: var(--serif); font-size: 17px; margin: 8px 0 4px; }
-.dcard h3 a { text-decoration: none; }
-.dcard .dir { font-size: 12px; color: var(--seal); }
-.dcard p { font-size: 13px; text-align: left; color: var(--ink-body); margin: 6px 0; }
-.dcard .kw { justify-content: center; margin-top: 4px; }
 .dyn { text-align: center; margin: 10px 0 0; }
 .dyn b { font-family: var(--serif); font-size: 28px; display: block; }
 .dyn.yes b { color: #2E7D52; } .dyn.no b { color: #92291F; } .dyn.maybe b { color: #8A6A14; }
 .dyn p { font-size: 13.5px; color: var(--ink-body); }
-.draw-again { text-align: center; margin-top: 14px; }
 .prose h3 { font-size: 15px; margin: 18px 0 6px; }
 @media (max-width: 560px) {
   .cgrid { grid-template-columns: repeat(3, 1fr); }
@@ -113,4 +94,126 @@
   .today { flex-direction: column; }
   .cf.sm { width: 72px; }
   .hero h1 { font-size: 27px; }
+}
+
+/* ===== 카드 뽑기: 섞기 → 고르기 → 뒤집기 (src/js/draw.js · /draw/ #tarot-app, 홈 #tarot-mini) ===== */
+.tapp { padding: 16px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; margin: 12px 0 18px; }
+.t-ctrl { display: grid; gap: 10px; margin-bottom: 14px; }
+.t-modes, .t-topics { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.t-modes button, .t-topics button { padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--paper); font: 500 13px/1.2 var(--sans); color: var(--ink-body); cursor: pointer; }
+.t-modes button.on { background: var(--ink); color: #F6F1E8; border-color: var(--ink); }
+.t-topics > span { font-size: 12px; color: var(--muted); margin-right: 2px; }
+.t-topics button { padding: 5px 11px; font-size: 12.5px; }
+.t-topics button.on { background: #FBF3E6; border-color: var(--seal); color: var(--seal-deep); font-weight: 700; }
+.t-q { display: block; font-size: 12.5px; color: var(--muted); }
+.t-q input { display: block; width: 100%; margin-top: 4px; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px; font: 14px var(--sans); background: var(--paper); color: var(--ink); }
+.t-q input:focus { outline: none; border-color: var(--seal); }
+.t-shared { padding: 12px 14px; margin-bottom: 12px; border-radius: 10px; background: #FBF3E6; border: 1px solid #EBD9BD; font-size: 13.5px; }
+.t-shared .btn { margin-left: 6px; padding: 6px 12px; font-size: 13px; }
+
+/* 카드 한 장 — 뒷면·앞면이 붙은 채 Y축으로 뒤집힌다 */
+.tcard { position: relative; display: block; width: 100%; padding: 0; border: 0; background: none; cursor: pointer; perspective: 900px; -webkit-tap-highlight-color: transparent; font: inherit; }
+.tflip { position: relative; display: block; width: 100%; aspect-ratio: 200 / 320; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.2, .75, .25, 1); }
+.tcard.open .tflip { transform: rotateY(180deg); }
+.tface { position: absolute; inset: 0; display: block; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+.tfr { transform: rotateY(180deg); }
+.tfr .cf { filter: drop-shadow(0 4px 10px rgba(33, 28, 21, .14)); }
+.tfr.rev .cf { transform: rotate(180deg); }
+.tb { position: absolute; inset: 0; display: block; border-radius: 7% / 4.4%; overflow: hidden; background-color: #211C15;
+  background-image: linear-gradient(rgba(217, 201, 163, .14) 1px, transparent 1px), linear-gradient(90deg, rgba(217, 201, 163, .14) 1px, transparent 1px);
+  background-size: 12.5% 7.8125%; background-position: center;
+  box-shadow: inset 0 0 0 3px #211C15, inset 0 0 0 4.5px #D9C9A3, 0 4px 10px rgba(33, 28, 21, .2); }
+.tb svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.tcard:focus-visible { outline: none; }
+.tcard:focus-visible .tb { box-shadow: inset 0 0 0 3px #211C15, inset 0 0 0 4.5px #D9C9A3, 0 0 0 3px var(--seal); }
+
+/* 무대 — 쌓인 덱을 섞고, 스물한 장을 펼친다 */
+.t-stage { position: relative; min-height: 250px; }
+.t-deck { position: absolute; left: 50%; top: 50%; width: 96px; height: 154px; margin: -77px 0 0 -48px; z-index: 3; transition: opacity .45s; pointer-events: none; }
+.t-deck.out { opacity: 0; }
+.tdk { position: absolute; inset: 0; }
+.tdk:nth-child(1) { transform: translate(-4px, 4px) rotate(-3deg); }
+.tdk:nth-child(2) { transform: translate(-2px, 2px) rotate(-1.5deg); }
+.tdk:nth-child(4) { transform: translate(2px, -2px) rotate(1.5deg); }
+.tdk:nth-child(5) { transform: translate(4px, -4px) rotate(3deg); }
+.t-deck.shuffling .tdk:nth-child(odd) { animation: tRiffleL .3s ease-in-out 4 alternate; }
+.t-deck.shuffling .tdk:nth-child(even) { animation: tRiffleR .3s ease-in-out 4 alternate; }
+.t-deck.shuffling .tdk:nth-child(3) { animation-delay: .06s; }
+.t-deck.shuffling .tdk:nth-child(4) { animation-delay: .1s; }
+@keyframes tRiffleL { to { transform: translate(-58px, 6px) rotate(-14deg); } }
+@keyframes tRiffleR { to { transform: translate(58px, -6px) rotate(14deg); } }
+.t-spread { display: grid; grid-template-columns: repeat(7, 1fr); gap: 14px 8px; max-width: 470px; margin: 0 auto; padding: 10px 2px 16px; }
+.t-spread:empty { display: none; }
+.t-spread .tcard { transform: translateY(var(--y)) rotate(var(--r)); transition: transform .45s cubic-bezier(.2, .8, .25, 1) var(--d), opacity .3s ease var(--d); }
+.t-spread.pre .tcard { transform: translate(var(--dx), var(--dy)) scale(.85); opacity: 0; transition: none; }
+.t-spread .tcard:hover:not(.taken), .t-spread .tcard:focus-visible { transform: translateY(calc(var(--y) - 9px)) rotate(var(--r)); transition-delay: 0s; }
+.t-spread .tcard.taken { opacity: 0; transition-delay: 0s; pointer-events: none; }
+.t-spread.fade .tcard { opacity: 0; transform: translateY(calc(var(--y) + 18px)) rotate(var(--r)); transition-delay: 0s; }
+.t-status { text-align: center; font-size: 14px; font-weight: 500; color: var(--ink-body); min-height: 1.5em; margin: 4px 0 10px; }
+.t-go { text-align: center; }
+
+/* 자리 — 고른 카드가 날아와 앉고, 눌러서 뒤집는다 */
+.t-slots { display: flex; justify-content: center; gap: 12px; margin: 2px 0 14px; }
+.tslot { flex: 0 1 128px; min-width: 0; text-align: center; }
+.t-slots.n1 .tslot { flex-basis: 150px; }
+.tslot-pos { font-size: 12px; color: var(--muted); letter-spacing: .04em; margin-bottom: 6px; white-space: nowrap; }
+.tslot-box { position: relative; aspect-ratio: 200 / 320; border: 1.5px dashed var(--underline); border-radius: 12px; background: rgba(246, 241, 232, .7); }
+.tslot.filled .tslot-box { border-color: transparent; background: none; }
+.tslot-box .tcard { position: absolute; inset: 0; animation: tSettle .35s ease-out; }
+.tapp[data-phase="revealing"] .tslot-box .tcard:not(.open) { animation: tBob 1.6s ease-in-out infinite; }
+.tapp[data-phase="revealing"] .tslot.filled:has(.tcard:not(.open))::after { content: "눌러서 뒤집기"; display: block; margin-top: 8px; font-size: 11.5px; color: var(--seal-deep); }
+.tghost { position: fixed; z-index: 60; pointer-events: none; transition: transform .5s cubic-bezier(.2, .8, .25, 1); }
+.tghost .tb { box-shadow: inset 0 0 0 3px #211C15, inset 0 0 0 4.5px #D9C9A3, 0 12px 26px rgba(33, 28, 21, .3); }
+@keyframes tSettle { from { transform: scale(.94); } }
+@keyframes tBob { 50% { transform: translateY(-4px); } }
+@keyframes tRise { from { opacity: 0; transform: translateY(8px); } }
+
+/* 풀이 */
+.t-reads { display: grid; gap: 12px; }
+.t-qecho { font-size: 13px; color: var(--muted); }
+.tread { padding: 14px 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); animation: tRise .45s ease-out; }
+.tr-pos { font-size: 11.5px; color: var(--muted); letter-spacing: .05em; }
+.tread h3, .tm-card h3 { font-family: var(--serif); font-size: 19px; margin: 4px 0 6px; line-height: 1.35; }
+.tread h3 a, .tm-card h3 a { text-decoration: none; color: var(--ink); }
+.tr-dir { font-family: var(--sans); font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; vertical-align: 2px; white-space: nowrap; }
+.tr-dir.up { background: #F1F7EC; color: #2E5A3E; } .tr-dir.rv { background: #F9EFEC; color: #7A3A31; }
+.tr-grp { font-family: var(--sans); font-size: 12px; color: var(--faint); font-weight: 400; white-space: nowrap; }
+.tr-topic { font-size: 12px; color: var(--seal-deep); font-weight: 700; margin: 10px 0 -4px; }
+.tread p { font-size: 14px; color: var(--ink-body); margin: 8px 0 0; }
+.tread .advice, .tm-card .advice { margin-top: 10px; font-size: 15px; }
+.tr-more { font-size: 13px; }
+.t-final { margin-top: 12px; }
+.tsum { padding: 14px 16px; border-radius: 12px; background: #FBF3E6; border: 1px solid #EBD9BD; animation: tRise .45s ease-out; }
+.tsum > b { font-family: var(--serif); font-size: 15px; }
+.tsum p { font-size: 14px; margin: 6px 0 0; color: var(--ink-body); }
+.t-acts { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 14px; }
+.t-toast { text-align: center; font-size: 13px; color: var(--seal-deep); margin-top: 8px; }
+
+/* 홈 — 부채꼴 일곱 장 중 한 장 */
+.tmini { text-align: center; margin: 4px 0 18px; padding: 16px 12px 18px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+.tmini h2 { margin: 0 0 4px; }
+.tm-fan { --step: 30px; --ang: 6deg; position: relative; height: 150px; margin: 8px auto 0; max-width: 440px; transition: height .45s cubic-bezier(.2, .8, .25, 1); }
+.tm-fan.chosen { height: 178px; }
+.tm-fan .tcard { --lift: 0px; position: absolute; left: 50%; bottom: 10px; width: 72px; margin-left: -36px; transform-origin: 50% 100%;
+  transform: translateX(calc(var(--k) * var(--step))) translateY(calc(var(--k) * var(--k) * 2px + var(--lift))) rotate(calc(var(--k) * var(--ang)));
+  transition: transform .45s cubic-bezier(.2, .8, .25, 1), opacity .35s; }
+.tm-fan .tcard:hover, .tm-fan .tcard:focus-visible { --lift: -14px; }
+.tm-fan.chosen .tcard:not(.me) { opacity: 0; --lift: 40px; pointer-events: none; }
+.tm-fan.chosen .tcard.me { z-index: 5; transform: translateX(0) translateY(-6px) rotate(0) scale(1.3); cursor: default; }
+.tm-res { margin-top: 20px; text-align: left; }
+.tm-card { animation: tRise .45s ease-out; }
+.tm-card h3 { text-align: center; }
+.tm-card .kw { justify-content: center; }
+.tm-card p { font-size: 14px; color: var(--ink-body); margin: 10px 0 0; }
+@media (min-width: 560px) {
+  .t-stage { min-height: 320px; }
+  .t-deck { width: 110px; height: 176px; margin: -88px 0 0 -55px; }
+  .t-spread { gap: 16px 10px; }
+  .tm-fan { --step: 50px; --ang: 7deg; height: 168px; }
+  .tm-fan.chosen { height: 206px; }
+  .tm-fan .tcard { width: 84px; margin-left: -42px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tflip, .t-spread .tcard, .tm-fan, .tm-fan .tcard, .t-deck, .tghost { transition: none !important; }
+  .t-deck.shuffling .tdk, .tslot-box .tcard, .tread, .tsum, .tm-card { animation: none !important; }
 }
