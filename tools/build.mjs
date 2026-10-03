@@ -107,7 +107,7 @@ const todayRev = (dayIndex * 7) % 3 === 0;
 const todayBox = () => `<div class="today"><div class="today-card">${cardSvg(todayCard, 'cf sm')}</div><div class="today-body"><div class="today-label">오늘의 카드 · ${today.y}년 ${today.m}월 ${today.d}일 ${wd}</div><h3><a href="${cUrl(todayCard)}${todayRev ? 'reversed/' : ''}">${esc(todayCard.name)} ${todayRev ? '역방향' : '정방향'}</a></h3><p>${esc(first(todayRev ? todayCard.rev : todayCard.up))}</p><p class="today-adv">${esc(todayCard.advice)}</p><a class="more" href="/daily/">오늘의 카드 자세히 →</a></div></div>`;
 
 /* ---------- 셸 ---------- */
-const SEARCH = `<form class="search" id="search" role="search" autocomplete="off"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="#9A8F7E" stroke-width="1.8"/><path d="M16.5 16.5L21 21" stroke="#9A8F7E" stroke-width="1.8" stroke-linecap="round"/></svg><input type="search" name="q" placeholder="카드 검색 — 연인, 죽음, 펜타클 에이스, 컵 퀸…" aria-label="카드 검색"><div class="res" hidden></div></form>`;
+const SEARCH = `<form class="search" id="search" role="search" autocomplete="off"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="#9A8F7E" stroke-width="1.8"/><path d="M16.5 16.5L21 21" stroke="#9A8F7E" stroke-width="1.8" stroke-linecap="round"/></svg><input type="search" name="q" placeholder="카드 검색: 연인, 죽음, 펜타클 에이스, 컵 퀸…" aria-label="카드 검색"><div class="res" hidden></div></form>`;
 function shell(o) {
   const ld = o.jsonld ? `<script type="application/ld+json">${JSON.stringify(o.jsonld)}</script>` : '';
   return `<!doctype html>
@@ -191,7 +191,7 @@ CARDS.forEach((c) => {
   const url = cUrl(c);
   const g = groupOf(c);
   const structure = c.arcana === 'major'
-    ? `<section><h2>카드의 자리</h2><ul class="meta"><li><b>번호</b> ${esc(c.meta.number)}</li><li><b>원소</b> ${esc(c.meta.element)}</li><li><b>점성</b> ${esc(c.meta.astro)}</li></ul><p>메이저 아르카나 22장은 바보(0)가 세계(21)에 이르는 여정입니다. ${esc(c.name)} 카드는 그 ${c.no}번째 자리에서 ${esc(c.kw.up.slice(0, 3).join('·'))}의 주제를 맡습니다. <a href="/major/">메이저 22장 흐름 보기</a></p></section>`
+    ? `<section><h2>카드의 자리</h2><ul class="meta"><li><b>번호</b> ${esc(c.meta.number)}</li><li><b>원소</b> ${esc(c.meta.element)}</li><li><b>점성</b> ${esc(c.meta.astro)}</li></ul><p>메이저 아르카나 22장은 바보(0)가 세계(21)에 이르기까지 걸어가는 길입니다. ${esc(c.name)} 카드는 ${c.no === 0 ? '길을 떠나기 전, 0번 자리' : `그 길의 ${c.no}번 자리`}에서 ${esc(c.kw.up.slice(0, 3).join('·'))}의 주제를 맡습니다. <a href="/major/">메이저 22장 흐름 보기</a></p></section>`
     : `<section><h2>구조로 읽기 — ${SUITS[c.suit].ko} × ${esc(RANK_MEANING[c.rank].label)}</h2><p>${esc(SUITS[c.suit].ko)} 수트는 ${SUITS[c.suit].el}의 원소로 ${esc(SUITS[c.suit].theme)}을 다룹니다. ${esc(RANK_MEANING[c.rank].text)} 그래서 ${esc(c.name)} 카드는 ${esc(SUITS[c.suit].theme.split('·')[0])}의 영역에서 ${esc(RANK_MEANING[c.rank].label)}의 단계를 뜻합니다. <a href="/${c.suit}/">${SUITS[c.suit].ko} 14장 전체 보기</a></p></section>`;
   const topicSummary = TOPICS.map((tp) => `<li><a href="${url}${tp.key}/"><b>${tp.title}</b></a><span class="up">정: ${esc(first(c[tp.key].up.replace(/^[^,]*에서 /, '')))}</span><span class="rv">역: ${esc(first(c[tp.key].rev.replace(/^[^,]*에서 /, '')))}</span></li>`).join('\n');
   const title = `${c.name} 카드 의미 — 정방향·역방향, 연애·재물·직장 해석 (${c.en})`;
@@ -210,7 +210,7 @@ CARDS.forEach((c) => {
 </div>
 <section><h2>카드 그림</h2><p>${esc(c.img)}</p></section>
 <section class="up-sec"><h2>${esc(c.name)} 정방향 의미</h2>${paras(c.up)}</section>
-<section class="rv-sec"><h2>${esc(c.name)} 역방향 의미</h2>${paras(c.rev)}<p><a href="${url}reversed/">역방향 자세히 — 연애·재물·직장·건강별 역방향 해석 →</a></p></section>
+<section class="rv-sec"><h2>${esc(c.name)} 역방향 의미</h2>${paras(c.rev)}<p><a href="${url}reversed/">연애·재물·직장·건강별 역방향 해석 자세히 보기 →</a></p></section>
 <section><h2>주제별 해석</h2><ul class="topics">
 ${topicSummary}
 </ul></section>
@@ -242,9 +242,9 @@ ${neighbors(c)}
     <p class="lead">${esc(first(c.rev))}</p>
   </div>
 </div>
-<section><h2>역방향은 무엇이 다른가</h2><p>정방향 ${esc(c.name)} 카드가 ${esc(c.kw.up.slice(0, 3).join('·'))} 쪽을 말한다면, 뒤집힌 ${esc(c.name)} 카드는 그 힘이 막히거나 지나치거나 반대로 작동하는 것을 보여 줍니다. 역방향은 나쁜 카드가 아니라 같은 주제를 다른 각도에서 보라는 신호예요.</p>${paras(c.rev)}</section>
+<section><h2>역방향은 무엇이 다른가</h2><p>정방향 ${esc(c.name)} 카드가 ${esc(c.kw.up.slice(0, 3).join('·'))} 쪽을 말한다면, 뒤집힌 ${esc(c.name)} 카드는 그 힘이 막히거나 지나치거나 반대로 작동하는 것을 보여 줍니다. 역방향은 나쁜 카드가 아니라 같은 주제를 다른 각도에서 보라는 신호입니다.</p>${paras(c.rev)}</section>
 ${TOPICS.map((tp) => `<section class="rv-sec"><h2>${tp.title}에서 ${esc(c.name)} 역방향</h2><p>${esc(c[tp.key].rev)}</p><p class="sub">정방향이라면: ${esc(first(c[tp.key].up))} <a href="${url}${tp.key}/">${tp.ko} 해석 전체 →</a></p></section>`).join('\n')}
-<section><h2>역방향일 때 조언</h2><p class="advice">${esc(c.advice)}</p><p>역방향은 조언의 방향을 바꾸지 않고 시급함을 더합니다. 위 조언을 "지금 막혀 있는 것"에 적용해 보세요.</p></section>
+<section><h2>역방향일 때 조언</h2><p class="advice">${esc(c.advice)}</p><p>역방향이라고 조언이 달라지지는 않고, 더 급해질 뿐입니다. 위 조언을 "지금 막혀 있는 것"에 적용해 보세요.</p></section>
 <section><h2>예·아니오 질문이라면</h2>${yesnoLine(c)}<p class="sub">역방향은 대개 정방향의 답을 약하게 하거나 뒤집습니다. 정방향 "예"라면 "늦어짐·조건부", 정방향 "아니오"라면 "벗어남·완화"로 읽는 것이 보통입니다.</p></section>
 ${relatedBox(c)}
 <p class="callout"><a href="${url}">${esc(c.name)} 정방향과 전체 의미</a> · <a href="${groupUrl(c)}">${g} 전체</a> · <a href="/guide/#reversed">역방향 읽는 법</a></p>`;
@@ -297,7 +297,7 @@ ${Object.values(SUITS).map((s) => `<section><h2><a href="/${s.slug}/">${s.ko} 14
   const mbody = `
 <div class="overline"><a href="/c/">타로 카드 78장</a></div>
 <h1>메이저 아르카나 22장 — 바보의 여정</h1>
-<p class="lead">메이저 아르카나는 타로의 뼈대입니다. 0번 바보가 길을 떠나 마법사·여사제·여황제·황제(자아와 세계의 기초)를 만나고, 연인·전차·힘·은둔자(시련과 성숙)를 지나, 운명의 수레바퀴와 정의·매달린 사람·죽음(전환)을 거쳐, 절제·악마·탑·별·달·태양·심판(영혼의 밤과 새벽)을 통과해 21번 세계에서 완성됩니다. 리딩에서 메이저가 나오면 그 자리는 인생의 큰 흐름이 걸려 있다는 뜻이에요.</p>
+<p class="lead">메이저 아르카나는 타로의 뼈대입니다. 0번 바보가 길을 떠나 마법사·여사제·여황제·황제(자아와 세계의 기초)를 만나고, 연인·전차·힘·은둔자(시련과 성숙)를 지나, 운명의 수레바퀴와 정의·매달린 사람·죽음(전환)을 거쳐, 절제·악마·탑·별·달·태양·심판(긴 밤과 새벽)을 통과해 21번 세계에서 완성됩니다. 리딩에서 메이저가 나오면 그 자리에 인생의 큰 흐름이 걸려 있다는 뜻입니다.</p>
 <section><h2>22장 한눈에</h2>${grid(majors)}</section>
 <section><h2>세 줄로 읽는 여정</h2>
 <h3>0~7 · 세상으로 나가기</h3><p>${majors.slice(0, 8).map((c) => `<a href="${cUrl(c)}">${esc(c.name)}</a>(${esc(c.kw.up[0])})`).join(' → ')}</p>
@@ -327,9 +327,9 @@ TOPICS.forEach((tp) => {
   const url = `/${tp.key}/`;
   const rows = (list) => `<ul class="tlist">${list.map((c) => `<li><a href="${cUrl(c)}${tp.key}/"><b>${esc(c.name)}</b></a><span class="up">${esc(first(c[tp.key].up.replace(/^[^,]*에서 /, '')))}</span><span class="rv">역: ${esc(first(c[tp.key].rev.replace(/^[^,]*에서 /, '')))}</span></li>`).join('')}</ul>`;
   const INTRO = {
-    love: '연애 질문에서 타로는 상대의 마음을 점치는 도구라기보다 지금 관계의 결을 비추는 거울입니다. 컵은 감정, 완드는 열정, 소드는 소통과 갈등, 펜타클은 현실적 기반을 말하고, 메이저는 관계의 큰 흐름을 말해요. 카드를 누르면 연애 정방향·역방향 해석으로 이어집니다.',
-    money: '재물 질문에서는 펜타클이 직접 돈을 말하고, 완드는 벌이는 힘, 컵은 돈을 두고 드는 감정, 소드는 계약과 판단을 말합니다. 메이저는 재정의 큰 전환을 뜻해요. 카드를 누르면 재물 정방향·역방향 해석으로 이어집니다.',
-    work: '직장·학업 질문에서는 완드가 추진과 경쟁, 펜타클이 성과와 안정, 소드가 전략과 갈등, 컵이 직장 내 관계를 말합니다. 메이저는 커리어의 전환점이에요. 카드를 누르면 직장 정방향·역방향 해석으로 이어집니다.',
+    love: '연애 질문에서 타로는 상대의 마음을 점치는 도구라기보다 지금 관계의 결을 비추는 거울입니다. 컵은 감정, 완드는 열정, 소드는 소통과 갈등, 펜타클은 현실적 기반을 말하고, 메이저는 관계의 큰 흐름을 말합니다. 카드를 누르면 연애 정방향·역방향 해석으로 이어집니다.',
+    money: '재물 질문에서는 펜타클이 직접 돈을 말하고, 완드는 벌이는 힘, 컵은 돈을 두고 드는 감정, 소드는 계약과 판단을 말합니다. 메이저는 재정의 큰 전환을 뜻합니다. 카드를 누르면 재물 정방향·역방향 해석으로 이어집니다.',
+    work: '직장·학업 질문에서는 완드가 추진과 경쟁, 펜타클이 성과와 안정, 소드가 전략과 갈등, 컵이 직장 내 관계를 말합니다. 메이저는 커리어의 전환점입니다. 카드를 누르면 직장 정방향·역방향 해석으로 이어집니다.',
     health: '건강 질문에서 타로는 진단 도구가 아닙니다. 몸과 마음의 상태를 비추는 참고로만 읽고, 실제 증상은 반드시 의료진과 상의하세요. 카드를 누르면 건강 정방향·역방향 해석으로 이어집니다.'
   };
   const body = `
@@ -353,7 +353,7 @@ ${Object.values(SUITS).map((s) => `<section><h2>${s.ko} 14장</h2>${rows(CARDS.f
 <div class="overline">타로첩</div>
 <h1>타로 예·아니오 — 78장 카드별 판단표</h1>
 <p class="lead">"될까요, 안 될까요?"에 한 장으로 답을 얻는 방법입니다. 질문을 예/아니오로 답할 수 있게 다듬고, 한 장을 뽑아 아래 표에서 찾으세요. 정방향이면 표의 답을, 역방향이면 대개 그 답이 약해지거나 뒤집힙니다. 78장 가운데 예 ${counts.yes}장, 아니오 ${counts.no}장, 보류 ${counts.maybe}장입니다.</p>
-<section><h2>읽는 법</h2><ul class="meta"><li><b>예</b> — 흐름이 질문을 밀어줍니다. 다만 카드의 조건(노력·시간·균형)을 함께 읽으세요.</li><li><b>아니오</b> — 지금 방식으로는 어렵다는 뜻입니다. 카드가 말하는 이유를 바꾸면 답도 바뀝니다.</li><li><b>보류</b> — 아직 정해지지 않았거나 당신의 선택에 달려 있습니다. 정보가 더 필요하거나 결정을 미루라는 뜻이에요.</li></ul></section>
+<section><h2>읽는 법</h2><ul class="meta"><li><b>예</b>: 흐름이 질문을 밀어줍니다. 다만 카드의 조건(노력·시간·균형)을 함께 읽으세요.</li><li><b>아니오</b>: 지금 방식으로는 어렵다는 뜻입니다. 카드가 말하는 이유를 바꾸면 답도 바뀝니다.</li><li><b>보류</b>: 아직 정해지지 않았거나 내 선택에 달려 있습니다. 정보가 더 필요하거나 결정을 미루라는 뜻입니다.</li></ul></section>
 ${groups.map(([name, list]) => `<section><h2>${name}</h2><table class="yntable"><thead><tr><th>카드</th><th>답</th><th>이렇게 읽어요</th></tr></thead><tbody>${list.map((c) => `<tr><td><a href="${cUrl(c)}">${esc(c.name)}</a></td><td><span class="yn-chip ${YESNO[c.yesno].cls}">${YESNO[c.yesno].ko}</span></td><td>${esc(c.yesnoNote)}</td></tr>`).join('')}</tbody></table></section>`).join('\n')}
 <section class="draw-cta"><h2>지금 한 장 뽑기</h2><p>질문을 마음에 두고 뽑으면 이 표의 답으로 바로 이어집니다.</p><a class="btn" href="/draw/?mode=yesno">예·아니오 카드 뽑기</a></section>`;
   add(url, shell({ url, title: '타로 예·아니오 — 78장 카드별 판단표 (예/아니오/보류)', desc: '타로 카드 78장을 예·아니오·보류로 정리한 표. 한 장 뽑기로 "될까요?"에 답하는 법, 정방향·역방향 읽는 법, 카드별 판단 이유.', body, jsonld: crumbs([{ name: '타로첩', url: '/' }, { name: '예·아니오', url }]) }));
@@ -408,7 +408,7 @@ ${groups.map(([name, list]) => `<section><h2>${name}</h2><table class="yntable">
   <div class="t-final" hidden></div>
   <noscript><p class="sub">카드 뽑기는 자바스크립트가 켜져 있어야 동작합니다. <a href="/daily/">오늘의 카드</a>나 <a href="/c/">78장 사전</a>을 보세요.</p></noscript>
 </div>
-<section><h2>어떻게 뽑고 읽나요</h2><ul class="meta"><li><b>섞고 고르기</b> — 카드 섞기를 누르면 78장 가운데 스물한 장이 엎어진 채 펼쳐집니다. 질문을 떠올리며 마음이 가는 카드를 고르세요.</li><li><b>한 장</b> — 오늘 하루나 질문 하나에. 뒤집은 카드의 뜻과 한 줄 조언을 봅니다.</li><li><b>세 장</b> — 고른 순서대로 과거(원인)·현재(상황)·미래(흐름). 세 장이 한 이야기가 되게 이어 읽습니다.</li><li><b>예·아니오</b> — 한 장의 예/아니오/보류 판단과 그 이유. 역방향은 답을 약하게 하거나 미룹니다.</li><li><b>주제</b> — 연애·재물·직장·건강을 고르면 그 주제의 해석으로 읽습니다. 뒤집은 뒤에 바꿔도 바로 다시 읽어요.</li></ul><p>배열법이 더 궁금하면 <a href="/spreads/">타로 배열법 안내</a>, 처음이라면 <a href="/guide/">타로 기초</a>를 먼저 보세요.</p></section>
+<section><h2>어떻게 뽑고 읽나요</h2><ul class="meta"><li><b>섞고 고르기</b>: 카드 섞기를 누르면 78장 가운데 스물한 장이 엎어진 채 펼쳐집니다. 질문을 떠올리며 마음이 가는 카드를 고르세요.</li><li><b>한 장</b>: 오늘 하루나 질문 하나에. 뒤집은 카드의 뜻과 한 줄 조언을 봅니다.</li><li><b>세 장</b>: 고른 순서대로 과거(원인)·현재(상황)·미래(흐름). 세 장이 한 이야기가 되게 이어 읽습니다.</li><li><b>예·아니오</b>: 한 장의 예/아니오/보류 판단과 그 이유. 역방향은 답을 약하게 하거나 미룹니다.</li><li><b>주제</b>: 연애·재물·직장·건강을 고르면 그 주제의 해석으로 읽습니다. 뒤집은 뒤에 바꿔도 바로 다시 읽어 줍니다.</li></ul><p>배열법이 더 궁금하면 <a href="/spreads/">타로 배열법 안내</a>, 처음이라면 <a href="/guide/">타로 기초</a>를 먼저 보세요.</p></section>
 <p class="note">뽑기는 브라우저에서만 이루어지며 질문은 어디에도 보내거나 저장하지 않습니다. 공유 링크에는 뽑은 카드만 담기고 질문은 담기지 않습니다.</p>`;
   add(url, shell({ url, title: '타로 카드 뽑기 — 원카드·쓰리카드·예아니오 무료 타로', desc: '질문을 두고 타로 카드를 뽑아 보세요. 한 장, 세 장(과거·현재·미래), 예·아니오. 뽑은 카드의 정방향·역방향 의미로 바로 이어집니다.', body, jsonld: { '@context': 'https://schema.org', '@type': 'WebApplication', name: '타로첩 카드 뽑기', url: SITE + url, applicationCategory: 'LifestyleApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'KRW' } }, extraScript: '<script src="/js/draw.js" defer></script>' }));
 }
@@ -419,12 +419,12 @@ ${groups.map(([name, list]) => `<section><h2>${name}</h2><table class="yntable">
   const body = `
 <div class="overline">타로첩 · 안내</div>
 <h1>타로 배열법 — 원카드·쓰리카드·켈틱 크로스</h1>
-<p class="lead">배열법(스프레드)은 카드를 놓는 자리마다 뜻을 정해 두는 약속입니다. 자리가 정해져 있으면 같은 카드도 "원인"인지 "결과"인지 읽을 수 있어요. 처음에는 한 장과 세 장으로 충분합니다.</p>
-<section><h2>원카드 — 하루 한 장</h2><p>질문 하나에 한 장. 가장 단순하고 가장 자주 쓰는 방법입니다. 아침에 뽑아 하루의 결로 삼거나, 결정을 앞두고 조언을 청할 때 씁니다. 카드의 정·역방향 의미를 그대로 읽고, 주제(연애·재물·직장·건강)가 있으면 그 해석을 봅니다. <a href="/daily/">오늘의 카드</a>가 이 방식이에요.</p></section>
-<section><h2>쓰리카드 — 과거·현재·미래</h2><p>왼쪽부터 세 장을 놓습니다. 첫 장은 지금 상황의 원인이나 지나온 흐름, 둘째 장은 현재 상황의 핵심, 셋째 장은 이대로 갈 때의 흐름이에요. 같은 세 자리를 "상황·장애·조언"이나 "나·상대·관계"로 바꿔 읽어도 됩니다. 세 장을 따로 읽지 말고 한 문장의 이야기로 이어 보세요. 소드 3(상처) → 소드 4(휴식) → 별(희망)이면 "상처 뒤 쉬어 가면 회복된다"는 식입니다.</p></section>
+<p class="lead">배열법(스프레드)은 카드를 놓는 자리마다 뜻을 정해 두는 약속입니다. 자리가 정해져 있으면 같은 카드도 "원인"인지 "결과"인지 읽을 수 있습니다. 처음에는 한 장과 세 장으로 충분합니다.</p>
+<section><h2>원카드 — 하루 한 장</h2><p>질문 하나에 한 장. 가장 단순하고 가장 자주 쓰는 방법입니다. 아침에 뽑아 하루의 결로 삼거나, 결정을 앞두고 조언을 청할 때 씁니다. 카드의 정·역방향 의미를 그대로 읽고, 주제(연애·재물·직장·건강)가 있으면 그 해석을 봅니다. <a href="/daily/">오늘의 카드</a>가 이 방식입니다.</p></section>
+<section><h2>쓰리카드 — 과거·현재·미래</h2><p>왼쪽부터 세 장을 놓습니다. 첫 장은 지금 상황의 원인이나 지나온 흐름, 둘째 장은 현재 상황의 핵심, 셋째 장은 이대로 갈 때의 흐름입니다. 같은 세 자리를 "상황·장애·조언"이나 "나·상대·관계"로 바꿔 읽어도 됩니다. 세 장을 따로 읽지 말고 한 문장의 이야기로 이어 보세요. 소드 3(상처) → 소드 4(휴식) → 별(희망)이면 "상처 뒤 쉬어 가면 회복된다"는 식입니다.</p></section>
 <section><h2>켈틱 크로스 — 열 장으로 보는 전체</h2><p>가장 유명한 큰 배열입니다. 1 현재 상황, 2 가로놓인 장애(또는 도움), 3 뿌리(무의식·원인), 4 지나간 과거, 5 의식·목표(머리 위), 6 다가오는 가까운 미래, 7 나 자신의 태도, 8 주변 환경과 사람, 9 희망과 두려움, 10 최종 흐름. 열 장을 다 읽으려면 메이저·마이너의 비율, 수트의 분포, 반복되는 숫자를 먼저 보고 세부로 들어가세요. 익숙해지기 전에는 세 장이 낫습니다.</p></section>
 <section><h2>관계 배열 — 나·상대·사이</h2><p>세 장을 나, 상대, 두 사람 사이로 놓습니다. 연애 질문에 잘 맞고, 상대 자리의 카드는 상대의 마음이 아니라 "관계 안에서 상대가 보이는 결"로 읽는 것이 안전합니다. <a href="/love/">연애 카드 78장</a>과 함께 보세요.</p></section>
-<section><h2>몇 가지 원칙</h2><ul class="meta"><li><b>질문을 먼저</b> — 막연한 질문은 막연한 답을 냅니다. "그 사람이 나를 좋아할까?"보다 "이 관계에서 내가 볼 것은?"이 더 쓸모 있어요.</li><li><b>같은 질문을 반복해서 뽑지 않기</b> — 답이 마음에 안 들어 다시 뽑으면 카드는 거울 노릇을 멈춥니다.</li><li><b>역방향은 선택</b> — 처음엔 정방향만 읽어도 됩니다. 익숙해지면 역방향을 섞으세요.</li><li><b>결정은 내 것</b> — 카드는 상황을 비추지 결정을 대신하지 않습니다.</li></ul></section>
+<section><h2>몇 가지 원칙</h2><ul class="meta"><li><b>질문을 먼저</b>: 막연한 질문은 막연한 답을 냅니다. "그 사람이 나를 좋아할까?"보다 "이 관계에서 내가 볼 것은?"이 더 쓸모 있습니다.</li><li><b>같은 질문을 반복해서 뽑지 않기</b>: 답이 마음에 안 들어 다시 뽑으면 카드는 거울 노릇을 멈춥니다.</li><li><b>역방향은 선택</b>: 처음엔 정방향만 읽어도 됩니다. 익숙해지면 역방향을 섞으세요.</li><li><b>결정은 내 것</b>: 카드는 상황을 비추지 결정을 대신하지 않습니다.</li></ul></section>
 <section class="draw-cta"><h2>바로 뽑기</h2><a class="btn" href="/draw/">한 장 · 세 장 뽑기</a> <a class="btn ghost" href="/guide/">타로 기초</a></section>`;
   add(url, shell({ url, title: '타로 배열법 — 원카드·쓰리카드·켈틱 크로스·관계 배열 읽는 법', desc: '타로 스프레드 안내. 하루 한 장 원카드, 과거·현재·미래 쓰리카드, 열 장 켈틱 크로스, 관계 배열의 자리 뜻과 읽는 원칙.', body, jsonld: crumbs([{ name: '타로첩', url: '/' }, { name: '배열법', url }]) }));
 
@@ -432,11 +432,11 @@ ${groups.map(([name, list]) => `<section><h2>${name}</h2><table class="yntable">
   const gbody = `
 <div class="overline">타로첩 · 안내</div>
 <h1>타로 기초 — 78장의 구조와 읽는 법</h1>
-<p class="lead">타로는 78장의 그림 카드입니다. 22장의 메이저 아르카나는 인생의 큰 주제를, 56장의 마이너 아르카나는 일상의 결을 맡아요. 점이라기보다 지금 상황을 다른 언어로 비추는 거울이라 생각하면 읽기가 편해집니다.</p>
-<section id="structure"><h2>메이저와 마이너</h2><p><a href="/major/">메이저 아르카나</a>는 바보(0)부터 세계(21)까지 번호가 있고, 각 카드가 큰 주제(시작·선택·시련·전환·완성)를 하나씩 맡습니다. 리딩에서 메이저가 나오면 그 자리는 인생의 흐름이 걸린 곳이에요. <a href="/c/">마이너 아르카나</a>는 네 수트로 나뉩니다. <a href="/wands/">완드</a>(불·행동), <a href="/cups/">컵</a>(물·감정), <a href="/swords/">소드</a>(공기·생각), <a href="/pentacles/">펜타클</a>(흙·물질). 각 수트는 에이스~10의 숫자 카드 열 장과 페이지·나이트·퀸·킹의 궁정 카드 넷으로 이루어져요.</p></section>
+<p class="lead">타로는 78장의 그림 카드입니다. 22장의 메이저 아르카나는 인생의 큰 주제를, 56장의 마이너 아르카나는 일상의 결을 맡습니다. 점이라기보다 지금 상황을 다른 언어로 비추는 거울이라 생각하면 읽기가 편해집니다.</p>
+<section id="structure"><h2>메이저와 마이너</h2><p><a href="/major/">메이저 아르카나</a>는 바보(0)부터 세계(21)까지 번호가 있고, 각 카드가 큰 주제(시작·선택·시련·전환·완성)를 하나씩 맡습니다. 리딩에서 메이저가 나오면 그 자리는 인생의 흐름이 걸린 곳입니다. <a href="/c/">마이너 아르카나</a>는 네 수트로 나뉩니다. <a href="/wands/">완드</a>(불·행동), <a href="/cups/">컵</a>(물·감정), <a href="/swords/">소드</a>(공기·생각), <a href="/pentacles/">펜타클</a>(흙·물질). 각 수트는 에이스~10의 숫자 카드 열 장과 페이지·나이트·퀸·킹의 궁정 카드 넷으로 이루어집니다.</p></section>
 <section id="numbers"><h2>숫자와 궁정 카드</h2><ul class="ranklist">${Object.entries(RANK_MEANING).map(([k, v]) => `<li><b>${esc(v.label)}</b><small>${esc(v.text)}</small></li>`).join('')}</ul></section>
-<section id="reversed"><h2>정방향과 역방향</h2><p>카드가 뒤집혀 나오면 역방향입니다. 역방향은 나쁜 카드가 아니라 같은 주제가 막히거나, 지나치거나, 반대로 작동하거나, 안으로 향한다는 신호예요. 태양 역방향은 "불행"이 아니라 "빛이 잠시 가려짐"이고, 악마 역방향은 오히려 "속박에서 벗어남"입니다. 각 카드 페이지의 역방향 해석과 <a href="/yesno/">예·아니오 표</a>의 역방향 읽는 법을 참고하세요. 처음엔 정방향만 읽어도 충분합니다.</p></section>
-<section id="question"><h2>좋은 질문 만들기</h2><p>타로는 질문의 질을 그대로 돌려줍니다. "될까요?"만 묻는 것보다 "이 상황에서 내가 놓치고 있는 것은?", "다음 한 달 어디에 힘을 둘까?"처럼 내가 움직일 수 있는 것을 물으세요. 남의 마음을 묻는 질문은 "관계 안에서 내가 볼 것"으로 바꾸면 더 쓸모 있는 답이 나옵니다.</p></section>
+<section id="reversed"><h2>정방향과 역방향</h2><p>카드가 뒤집혀 나오면 역방향입니다. 역방향은 나쁜 카드가 아니라 같은 주제가 막히거나, 지나치거나, 반대로 작동하거나, 안으로 향한다는 신호입니다. 태양 역방향은 "불행"이 아니라 "빛이 잠시 가려짐"이고, 악마 역방향은 오히려 "속박에서 벗어남"입니다. 각 카드 페이지의 역방향 해석과 <a href="/yesno/">예·아니오 표</a>의 역방향 읽는 법을 참고하세요. 처음엔 정방향만 읽어도 충분합니다.</p></section>
+<section id="question"><h2>좋은 질문 만들기</h2><p>타로에서는 질문이 좋아야 답도 좋습니다. "될까요?"만 묻는 것보다 "이 상황에서 내가 놓치고 있는 것은?", "다음 한 달 어디에 힘을 둘까?"처럼 내가 움직일 수 있는 것을 물으세요. 남의 마음을 묻는 질문은 "관계 안에서 내가 볼 것"으로 바꾸면 더 쓸모 있는 답이 나옵니다.</p></section>
 <section id="ethics"><h2>읽을 때 지킬 것</h2><ul class="meta"><li>건강·법률·재정의 중요한 결정은 카드가 아니라 전문가와 상의하세요.</li><li>같은 질문을 답이 마음에 들 때까지 반복해 뽑지 마세요.</li><li>카드는 정해진 미래가 아니라 지금의 흐름입니다. 흐름은 행동으로 바뀝니다.</li></ul></section>
 <section class="draw-cta"><h2>시작하기</h2><a class="btn" href="/draw/">카드 뽑기</a> <a class="btn ghost" href="/spreads/">배열법 보기</a> <a class="btn ghost" href="/c/">78장 사전</a></section>
 <p class="note">타로첩은 <a href="${SAJU}/">사주첩</a>이 만든 자매 사이트입니다. 태어난 날의 여덟 글자로 보는 흐름은 사주첩에서, 꿈의 상징은 <a href="${DREAM}/">꿈첩</a>에서, 생년월일의 나이·띠·기념일은 <a href="${SAENGIL}/">생일첩</a>에서 이어 보세요.</p>`;
@@ -462,7 +462,7 @@ ${todayBox()}
 <section><h2><a href="/major/">메이저 아르카나 22장</a></h2>${grid(majors)}</section>
 <section><h2>마이너 아르카나 — 네 수트</h2><div class="suits">${Object.values(SUITS).map((s) => `<a class="suit" href="/${s.slug}/" style="--sc:${s.color}"><svg viewBox="0 0 200 320" aria-hidden="true"><g style="color:${s.color}" transform="translate(0 40)">${GLYPH[s.slug]}</g></svg><b>${s.ko}</b><span>${esc(s.alt)} · ${s.el}</span><small>${esc(s.theme)}</small></a>`).join('')}</div></section>
 <section><h2>질문별로 보기</h2><div class="hubs">${TOPICS.map((tp) => `<a href="/${tp.key}/"><b>${tp.title}</b><span>${tp.desc} 질문에 나온 카드의 뜻</span></a>`).join('')}<a href="/yesno/"><b>예·아니오</b><span>78장 판단표</span></a><a href="/spreads/"><b>배열법</b><span>원카드·쓰리카드·켈틱 크로스</span></a><a href="/guide/"><b>타로 기초</b><span>구조·역방향·질문법</span></a><a href="/daily/"><b>오늘의 카드</b><span>매일 새벽 한 장</span></a></div></section>
-<section class="about"><h2>타로첩은</h2><p>타로첩(占帖)은 <a href="${SAJU}/">사주첩</a>이 만든 네 번째 자매 사이트입니다. 첩(帖)은 글을 모아 묶은 책, 점(占)은 비춰 보는 일. 라이더 웨이트 덱 78장을 기준으로 카드마다 그림 묘사, 정방향·역방향 의미, 네 가지 주제 해석, 예·아니오 판단, 한 줄 조언을 한 장씩 담았습니다. 검색창에 카드 이름을 치거나 위의 목록에서 고르세요.</p></section>`;
+<section class="about"><h2>타로첩은</h2><p>타로첩(占帖)은 <a href="${SAJU}/">사주첩</a>이 만든 네 번째 자매 사이트입니다. 첩(帖)은 글을 모아 묶은 책이고, 점(占)은 비춰 보는 일입니다. 라이더 웨이트 덱 78장을 기준으로 카드마다 그림 묘사, 정방향·역방향 의미, 네 가지 주제 해석, 예·아니오 판단, 한 줄 조언을 한 장씩 담았습니다. 검색창에 카드 이름을 치거나 위의 목록에서 고르세요.</p></section>`;
   add('/', shell({ url: '/', title: '타로첩 — 타로 카드 78장 의미 사전, 오늘의 카드와 카드 뽑기', desc: '타로 카드 78장 정방향·역방향 의미, 연애·재물·직장·건강별 해석, 예·아니오 판단표, 오늘의 카드, 무료 카드 뽑기. 사주첩이 만든 타로 사전.', body, jsonld: { '@context': 'https://schema.org', '@type': 'WebSite', name: '타로첩', url: SITE + '/', potentialAction: { '@type': 'SearchAction', target: SITE + '/c/?q={q}', 'query-input': 'required name=q' } }, extraScript: '<script src="/js/draw.js" defer></script>' }));
 }
 

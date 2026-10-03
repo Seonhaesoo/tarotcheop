@@ -219,7 +219,7 @@
       var k = +btn.getAttribute('data-k'), p = st.picks[k];
       putFront(btn, p);
       btn.classList.add('open');
-      btn.setAttribute('aria-label', MODES[st.mode].pos[k] + ' — ' + p.c.n + (p.rev ? ' 역방향' : ' 정방향'));
+      btn.setAttribute('aria-label', MODES[st.mode].pos[k] + ': ' + p.c.n + (p.rev ? ' 역방향' : ' 정방향'));
       p.opened = true;
       wait(380).then(function () {
         renderReads();
@@ -238,7 +238,7 @@
         '<p>' + esc(text) + '</p>';
       if (st.mode === 'yesno') {
         var shown = rev ? 'maybe' : c.yn;
-        h += '<div class="dyn ' + shown + '"><b>' + YN[shown] + '</b><p>' + esc(c.ynn) + (rev ? ' 역방향으로 나와 답이 약해집니다 — 조건부나 시기 지연으로 읽으세요.' : '') + '</p></div>';
+        h += '<div class="dyn ' + shown + '"><b>' + YN[shown] + '</b><p>' + esc(c.ynn) + (rev ? ' 역방향으로 나와 답이 약해집니다. 조건이 붙거나 때가 늦어지는 답으로 읽으세요.' : '') + '</p></div>';
       } else if (st.mode === 'one') {
         h += '<div class="advice">' + esc(c.ad) + '</div>';
       }
@@ -256,9 +256,9 @@
       var revN = st.picks.filter(function (p) { return p.rev; }).length;
       var majN = st.picks.filter(function (p) { return p.c.a === 'major'; }).length;
       var notes = [];
-      if (majN >= 2) notes.push('메이저 카드가 ' + majN + '장 — 개인의 선택을 넘어서는 큰 흐름이 움직이는 때예요.');
-      if (revN >= 2) notes.push('역방향이 ' + revN + '장 — 막히거나 늦어지는 신호예요. 서두르기보다 점검이 먼저예요.');
-      if (!revN) notes.push('세 장 모두 정방향 — 흐름이 막힘없이 이어지는 편이에요.');
+      if (majN >= 2) notes.push('메이저 카드가 ' + majN + '장 나왔어요. 내 선택을 넘어서는 큰 흐름이 움직이는 때예요.');
+      if (revN >= 2) notes.push('역방향이 ' + revN + '장 나왔어요. 막히거나 늦어진다는 신호니 서두르기보다 먼저 점검하세요.');
+      if (!revN) notes.push('세 장 모두 정방향으로 나왔어요. 흐름이 막힘없이 이어지는 편이에요.');
       return '<div class="tsum"><b>세 장을 이어 읽으면</b><p>과거엔 ‘' + esc(k[0]) + '’, 지금은 ‘' + esc(k[1]) + '’, 앞으로는 ‘' + esc(k[2]) + '’의 흐름이에요.</p>' +
         notes.map(function (n) { return '<p class="sub">' + esc(n) + '</p>'; }).join('') + '<p class="sub"><a href="/spreads/">쓰리카드 읽는 법 →</a></p></div>';
     }
@@ -317,7 +317,7 @@
         makeSlots();
         el.slots.querySelectorAll('.tslot').forEach(function (slot, i) {
           var box = slot.querySelector('.tslot-box');
-          box.innerHTML = '<button type="button" class="tcard inslot open" data-k="' + i + '" aria-label="' + esc(MODES[m[1]].pos[i] + ' — ' + list[i].c.n) + '">' + cardInner() + '</button>';
+          box.innerHTML = '<button type="button" class="tcard inslot open" data-k="' + i + '" aria-label="' + esc(MODES[m[1]].pos[i] + ': ' + list[i].c.n) + '">' + cardInner() + '</button>';
           putFront(box.querySelector('.tcard'), list[i]);
           slot.classList.add('filled');
         });
