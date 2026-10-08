@@ -28,7 +28,9 @@ const readMap = (file) => {
   }
 };
 const robots = fs.existsSync(path.join(DIST, 'robots.txt')) ? fs.readFileSync(path.join(DIST, 'robots.txt'), 'utf8') : '';
-for (const m of robots.matchAll(/^\s*Sitemap:\s*(\S+)/gim)) readMap(path.join(DIST, new URL(m[1]).pathname));
+/* 구글용 사이트맵(robots.txt)이 일부만 담는 사이트는 전체 목록 sitemap-all.xml 이 있으면 그것으로 RSS 를 만든다(네이버용) */
+if (fs.existsSync(path.join(DIST, 'sitemap-all.xml'))) readMap(path.join(DIST, 'sitemap-all.xml'));
+else for (const m of robots.matchAll(/^\s*Sitemap:\s*(\S+)/gim)) readMap(path.join(DIST, new URL(m[1]).pathname));
 
 for (const e of entries) {
   const d = new URL(e.url).pathname.match(/^\/(\d{4})\/(\d{2})\/(\d{2})\/$/);

@@ -108,6 +108,10 @@ const todayBox = () => `<div class="today"><div class="today-card">${cardSvg(tod
 
 /* ---------- 셸 ---------- */
 const SEARCH = `<form class="search" id="search" role="search" autocomplete="off"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="11" cy="11" r="7" stroke="#9A8F7E" stroke-width="1.8"/><path d="M16.5 16.5L21 21" stroke="#9A8F7E" stroke-width="1.8" stroke-linecap="round"/></svg><input type="search" name="q" placeholder="카드 검색: 연인, 죽음, 펜타클 에이스, 컵 퀸…" aria-label="카드 검색"><div class="res" hidden></div></form>`;
+/* 2026-10-08 구글 스팸 업데이트 대응 — 카드별 변형 페이지(역방향·연애·재물·직장·건강)는 구글에만 검색 제외(googlebot noindex, follow), 네이버·빙은 그대로.
+ * 구글 노출이 있던 변형만 남긴다(서치콘솔 9/1~10/8). 카드 78장·수트·메이저·주제 허브는 모두 남김. 구글용 sitemap.xml 에서 빼고 전체는 sitemap-all.xml */
+const G_KEEP = new Set(['/c/the-moon/work/', '/c/swords-knight/love/', '/c/judgement/health/', '/c/the-moon/love/', '/c/death/love/', '/c/cups-6/love/', '/c/cups-7/love/', '/c/swords-9/reversed/', '/c/judgement/love/', '/c/pentacles-3/love/', '/c/the-fool/work/', '/c/the-hierophant/reversed/', '/c/cups-ace/money/', '/c/judgement/reversed/', '/c/the-fool/reversed/', '/c/the-world/work/', '/c/wands-2/love/', '/c/the-moon/reversed/', '/c/the-moon/health/', '/c/cups-2/health/']);
+const gNo = (url) => /^\/c\/[^/]+\/(reversed|love|money|work|health)\/$/.test(url || '') && !G_KEEP.has(url);
 function shell(o) {
   const ld = o.jsonld ? `<script type="application/ld+json">${JSON.stringify(o.jsonld)}</script>` : '';
   return `<!doctype html>
@@ -116,7 +120,7 @@ function shell(o) {
 <meta charset="utf-8">
 ${GA}
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="robots" content="max-image-preview:large">
+<meta name="robots" content="max-image-preview:large">${gNo(o.url) ? '\n<meta name="googlebot" content="noindex, follow">' : ''}
 <link rel="alternate" type="application/rss+xml" title="새 글" href="/rss.xml">
 <title>${esc(o.title)}</title>
 <meta name="description" content="${esc(o.desc)}">
@@ -480,7 +484,9 @@ ${todayBox()}
 fs.writeFileSync(path.join(OUT, 'index.json'), JSON.stringify(CARDS.map((c) => ({ t: c.name, e: c.en, u: cUrl(c), k: [c.en].concat(c.alt || [], c.kw.up.slice(0, 3)).join(' '), g: groupOf(c) }))));
 fs.writeFileSync(path.join(OUT, 'cards.json'), JSON.stringify(CARDS.map((c) => ({ s: c.slug, n: c.name, e: c.en, g: groupOf(c), r: rankLabel(c), a: c.arcana, su: c.suit || null, up: firstN(c.up, 2), rv: firstN(c.rev, 2), ku: c.kw.up, kr: c.kw.rev, yn: c.yesno, ynn: c.yesnoNote, ad: c.advice,
   t: Object.fromEntries(TOPICS.map((tp) => [tp.key, [firstN(c[tp.key].up, 2), firstN(c[tp.key].rev, 2)]])) }))));
-fs.writeFileSync(path.join(OUT, 'sitemap.xml'), ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'].concat(urls.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${BUILD_ISO}</lastmod>${u === '/daily/' || u === '/' ? '<changefreq>daily</changefreq>' : ''}</url>`)).concat(['</urlset>', '']).join('\n'));
+const sm = (list) => ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'].concat(list.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${BUILD_ISO}</lastmod>${u === '/daily/' || u === '/' ? '<changefreq>daily</changefreq>' : ''}</url>`)).concat(['</urlset>', '']).join('\n');
+fs.writeFileSync(path.join(OUT, 'sitemap.xml'), sm(urls.filter((u) => !gNo(u))));   /* 구글용(robots.txt) */
+fs.writeFileSync(path.join(OUT, 'sitemap-all.xml'), sm(urls));   /* 전체 — 네이버·빙 제출용 */
 fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
 fs.writeFileSync(path.join(OUT, 'CNAME'), 'tarot.sajucheop.com\n');
 fs.writeFileSync(path.join(OUT, 'favicon.svg'), `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30"><rect x="1.5" y="1.5" width="27" height="27" rx="5" fill="#B8382D"/><text x="15" y="20.5" text-anchor="middle" font-family="'Noto Serif KR', serif" font-size="15" font-weight="700" fill="#F6F1E8">占</text></svg>`);
