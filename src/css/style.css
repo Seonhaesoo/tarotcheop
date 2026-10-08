@@ -88,7 +88,7 @@ strong { color: var(--ink); }
 
 .callout { background: var(--card); border-left: 3px solid var(--seal); padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-body); margin: 12px 0; }
 .callout a { text-decoration: none; }
-.today { background: #FFFDF9; border: 1px dashed var(--underline); border-radius: 10px; padding: 12px 14px; margin: 14px 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-body); }
+.today { background: #FFFDF9; border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin: 14px 0; font-size: 13.5px; line-height: 1.7; color: var(--ink-body); }
 .today b { font-family: var(--serif); color: var(--seal); }
 
 table { width: 100%; border-collapse: collapse; font-size: 13.5px; margin: 10px 0; background: var(--card); }
@@ -105,3 +105,14 @@ footer { margin-top: 36px; padding-top: 14px; border-top: 1px solid var(--line);
 .frow nav { display: flex; gap: 12px; }
 .frow a { color: var(--muted); text-decoration: none; }
 .fnote { margin-top: 8px; font-size: 12px; color: var(--faint); line-height: 1.6; }
+
+/* 시안 A(2026-10-08) — 첫 화면 머리글·제목, 오늘 칸, 먹색 주 버튼 */
+.hero-over { margin: 6px 0 10px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--seal); }
+.hero-h1 { font-size: 30px; line-height: 1.32; word-break: keep-all; }
+.today-a { position: relative; overflow: hidden; margin: 30px 0 0; padding: 20px 0 4px; border-top: 1px solid var(--line); }
+.today-a .ta-wm { position: absolute; right: -4px; top: 6px; font-family: var(--serif); font-size: 84px; font-weight: 700; line-height: 1; color: #EAE1CF; pointer-events: none; }
+.today-a > :not(.ta-wm) { position: relative; }
+.today-a .hero-over { margin: 0 0 4px; }
+.today-a .ta-date { margin: 0; font-size: 13px; color: var(--muted); }
+.today-a .ta-line { margin: 12px 0 0; font-family: var(--serif); font-size: 18px; line-height: 1.65; font-weight: 600; color: var(--ink); word-break: keep-all; }
+.today-a .ta-more { display: inline-block; margin-top: 12px; font-size: 14px; font-weight: 700; color: var(--seal); text-decoration: none; }

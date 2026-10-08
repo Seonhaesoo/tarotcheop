@@ -448,7 +448,8 @@ ${groups.map(([name, list]) => `<section><h2>${name}</h2><table class="yntable">
   const majors = CARDS.filter((c) => c.arcana === 'major');
   const body = `
 <section class="hero">
-  <h1>타로첩 <small>占</small></h1>
+  <p class="hero-over">타로 카드 78장 사전 · 占</p>
+  <h1 class="hero-h1">카드 한 장으로 읽는<br>타로 78장의 뜻</h1>
   <p>타로 카드 78장의 의미를 정방향·역방향, 연애·재물·직장·건강별로 풀어 둔 사전입니다. 오늘의 카드를 보고, 한 장을 뽑고, 나온 카드의 뜻을 바로 읽으세요.</p>
   <div class="hero-cta"><a class="btn" href="/draw/">카드 뽑기</a><a class="btn ghost" href="/c/">78장 사전</a><a class="btn ghost" href="/yesno/">예·아니오</a></div>
 </section>

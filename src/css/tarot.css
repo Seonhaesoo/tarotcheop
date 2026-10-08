@@ -6,8 +6,8 @@
 .hero-cta, .draw-cta { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 .draw-cta h2 { width: 100%; text-align: center; }
 .draw-cta p { width: 100%; text-align: center; margin-top: -6px; }
-.btn { display: inline-block; padding: 10px 18px; border-radius: 999px; background: var(--seal); color: #F6F1E8; text-decoration: none; font-weight: 600; font-size: 14px; border: 1px solid var(--seal); cursor: pointer; font-family: var(--sans); }
-.btn.ghost { background: var(--card); color: var(--seal-deep); border-color: var(--line); }
+.btn { display: inline-block; padding: 10px 18px; border-radius: 999px; background: var(--ink); color: #F6F1E8; text-decoration: none; font-weight: 700; font-size: 14px; border: 1px solid var(--ink); cursor: pointer; font-family: var(--sans); }
+.btn.ghost { background: var(--card); color: var(--ink); border-color: var(--line); }
 .btn.big { padding: 13px 26px; font-size: 16px; }
 .cf { width: 100%; height: auto; display: block; filter: drop-shadow(0 4px 10px rgba(33, 28, 21, 0.12)); }
 .cf.sm { width: 84px; }
@@ -217,3 +217,7 @@
   .tflip, .t-spread .tcard, .tm-fan, .tm-fan .tcard, .t-deck, .tghost { transition: none !important; }
   .t-deck.shuffling .tdk, .tslot-box .tcard, .tread, .tsum, .tm-card { animation: none !important; }
 }
+
+/* 시안 A(2026-10-08) */
+.hero p.hero-over { margin: 0 auto 10px; color: var(--seal); font-size: 12px; }
+.hero h1.hero-h1 { font-size: 29px; line-height: 1.35; word-break: keep-all; }
