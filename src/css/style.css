@@ -116,3 +116,23 @@ footer { margin-top: 36px; padding-top: 14px; border-top: 1px solid var(--line);
 .today-a .ta-date { margin: 0; font-size: 13px; color: var(--muted); }
 .today-a .ta-line { margin: 12px 0 0; font-family: var(--serif); font-size: 18px; line-height: 1.65; font-weight: 600; color: var(--ink); word-break: keep-all; }
 .today-a .ta-more { display: inline-block; margin-top: 12px; font-size: 14px; font-weight: 700; color: var(--seal); text-decoration: none; }
+
+/* 홈 소개 단계·바닥글(2026-10-11) — 사주첩 첫 화면 아래쪽과 같은 형식 */
+.intro-label { margin: 0; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--faint); }
+section.intro h2 { margin: 4px 0 0; padding-bottom: 0; border-bottom: 0; font-size: 21px; }
+.steps { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 18px; }
+.steps li { display: grid; grid-template-columns: 26px 1fr; column-gap: 14px; align-items: start; }
+.steps i { display: flex; align-items: center; justify-content: center; width: 26px; height: 26px; margin-top: -1px; border-radius: 6px; background: var(--seal); font-style: normal; font-family: var(--serif); font-size: 14px; font-weight: 700; line-height: 1; color: var(--paper); }
+.steps b { display: block; font-size: 15px; font-weight: 700; color: var(--ink); line-height: 1.5; }
+.steps p { margin: 4px 0 0; font-size: 14px; line-height: 1.8; color: var(--ink-body); }
+footer.foot2 { margin: 40px -18px -40px; padding: 26px 18px 36px; border-top: 0; background: #EEE6D6; }
+@media (max-width: 480px) { footer.foot2 { margin: 36px -14px -36px; padding: 24px 14px 32px; } }
+.flabel { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: 0.14em; color: var(--faint); }
+.fgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 12px; margin: 0 0 18px; }
+.fgrid a { padding: 8px 0; font-size: 13px; color: var(--ink-body); text-decoration: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.fgrid a:hover { color: var(--seal); }
+.frow2 { display: flex; flex-direction: column; gap: 10px; padding-top: 16px; border-top: 1px solid var(--line); font-size: 12px; color: var(--faint); }
+.frow2 nav { display: flex; flex-wrap: wrap; gap: 6px 16px; }
+.frow2 a { color: var(--muted); text-decoration: none; }
+.frow2 a:hover { color: var(--seal); }
+footer.foot2 .fnote { margin-top: 12px; }

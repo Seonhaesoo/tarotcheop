@@ -154,8 +154,10 @@ ${ld}
 </header>
 ${o.noSearch ? '' : SEARCH}
 ${o.body}
-<footer>
-  <div class="frow"><span>© 타로첩 · <a href="${SAJU}/">사주첩</a> · <a href="https://bodyzip.com/">바디집</a> 자매 사이트</span><nav><a href="/guide/">타로 기초</a><a href="/about/">소개</a><a href="/terms/">이용약관</a><a href="/privacy/">개인정보</a></nav></div>
+<footer class="foot2">
+  <p class="flabel">카드 찾아보기</p>
+  <nav class="fgrid" aria-label="카드 찾아보기"><a href="/major/">메이저 22장</a><a href="/c/">78장 전체</a><a href="/yesno/">예·아니오</a><a href="/draw/">카드 뽑기</a><a href="/daily/">오늘의 카드</a><a href="/guide/">타로 기초</a></nav>
+  <div class="frow2"><nav><a href="/about/">소개</a><a href="/terms/">이용약관</a><a href="/privacy/">개인정보</a></nav><span>© 타로첩 · <a href="${SAJU}/">사주첩</a> · <a href="https://bodyzip.com/">바디집</a> 자매 사이트</span></div>
   <p class="fnote">타로 해석은 라이더 웨이트 전통을 바탕으로 한 참고용 콘텐츠입니다. 카드는 정해진 미래가 아니라 지금의 상황을 비추는 거울이며, 중요한 결정의 근거로 삼지 마세요.</p>
 </footer>
 </div>
@@ -467,7 +469,7 @@ ${todayBox()}
 <section><h2><a href="/major/">메이저 아르카나 22장</a></h2>${grid(majors)}</section>
 <section><h2>마이너 아르카나 — 네 수트</h2><div class="suits">${Object.values(SUITS).map((s) => `<a class="suit" href="/${s.slug}/" style="--sc:${s.color}"><svg viewBox="0 0 200 320" aria-hidden="true"><g style="color:${s.color}" transform="translate(0 40)">${GLYPH[s.slug]}</g></svg><b>${s.ko}</b><span>${esc(s.alt)} · ${s.el}</span><small>${esc(s.theme)}</small></a>`).join('')}</div></section>
 <section><h2>질문별로 보기</h2><div class="hubs">${TOPICS.map((tp) => `<a href="/${tp.key}/"><b>${tp.title}</b><span>${tp.desc} 질문에 나온 카드의 뜻</span></a>`).join('')}<a href="/yesno/"><b>예·아니오</b><span>78장 판단표</span></a><a href="/spreads/"><b>배열법</b><span>원카드·쓰리카드·켈틱 크로스</span></a><a href="/guide/"><b>타로 기초</b><span>구조·역방향·질문법</span></a><a href="/daily/"><b>오늘의 카드</b><span>매일 새벽 한 장</span></a></div></section>
-<section class="about"><h2>타로첩은</h2><p>타로첩(占帖)은 <a href="${SAJU}/">사주첩</a>이 만든 네 번째 자매 사이트입니다. 첩(帖)은 글을 모아 묶은 책이고, 점(占)은 비춰 보는 일입니다. 라이더 웨이트 덱 78장을 기준으로 카드마다 그림 묘사, 정방향·역방향 의미, 네 가지 주제 해석, 예·아니오 판단, 한 줄 조언을 한 장씩 담았습니다. 검색창에 카드 이름을 치거나 위의 목록에서 고르세요.</p></section>`;
+<section class="intro"><p class="intro-label">타로첩 이야기</p><h2>타로첩은 이렇게 읽습니다</h2><ol class="steps"><li><i aria-hidden="true">一</i><div><b>78장을 한 장씩 담았습니다</b><p>타로첩(占帖)은 <a href="${SAJU}/">사주첩</a>이 만든 네 번째 자매 사이트입니다. 첩(帖)은 글을 모아 묶은 책이고, 점(占)은 비춰 보는 일입니다. 라이더 웨이트 덱 78장을 기준으로 합니다.</p></div></li><li><i aria-hidden="true">二</i><div><b>카드마다 다섯 가지를 적었습니다</b><p>그림 묘사, 정방향·역방향 의미, 네 가지 주제 해석, 예·아니오 판단, 한 줄 조언을 카드마다 한 장에 담았습니다.</p></div></li><li><i aria-hidden="true">三</i><div><b>카드 이름으로 바로 찾습니다</b><p>검색창에 카드 이름을 치거나 위의 목록에서 고르세요.</p></div></li></ol></section>`;
   add('/', shell({ url: '/', title: '타로첩 — 타로 카드 78장 의미 사전, 오늘의 카드와 카드 뽑기', desc: '타로 카드 78장 정방향·역방향 의미, 연애·재물·직장·건강별 해석, 예·아니오 판단표, 오늘의 카드, 무료 카드 뽑기. 사주첩이 만든 타로 사전.', body, jsonld: { '@context': 'https://schema.org', '@type': 'WebSite', name: '타로첩', url: SITE + '/', potentialAction: { '@type': 'SearchAction', target: SITE + '/c/?q={q}', 'query-input': 'required name=q' } }, extraScript: '<script src="/js/draw.js" defer></script>' }));
 }
 
