@@ -28,6 +28,7 @@ const t = new Date(Date.now() + 9 * 3600e3);
 const today = { y: t.getUTCFullYear(), m: t.getUTCMonth() + 1, d: t.getUTCDate() };
 const pad = (n) => String(n).padStart(2, '0');
 const BUILD_ISO = `${today.y}-${pad(today.m)}-${pad(today.d)}`;
+const CONTENT_DATE = '2026-10-15';   /* 카드 풀이·안내를 마지막으로 고친 날 — 사이트맵 lastmod·Article dateModified. 글을 고칠 때만 바꾼다. 오늘의 카드(/daily/)와 첫 화면만 매일 */
 const WD = ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일'];
 const wd = WD[new Date(Date.UTC(today.y, today.m - 1, today.d)).getUTCDay()];
 const dayIndex = Math.floor(Date.UTC(today.y, today.m - 1, today.d) / 86400000);
@@ -175,7 +176,7 @@ function write(url, html) {
 const urls = [];
 const add = (url, html) => { write(url, html); urls.push(url); };
 const crumbs = (items) => ({ '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: items.map((it, i) => ({ '@type': 'ListItem', position: i + 1, name: it.name, item: SITE + it.url })) });
-const article = (title, desc, url) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: '2026-09-06', dateModified: BUILD_ISO, inLanguage: 'ko', author: { '@type': 'Organization', name: '타로첩' }, publisher: { '@type': 'Organization', name: '타로첩' }, mainEntityOfPage: SITE + url });
+const article = (title, desc, url) => ({ '@context': 'https://schema.org', '@type': 'Article', headline: title, description: desc, datePublished: '2026-09-06', dateModified: url === '/daily/' ? BUILD_ISO : CONTENT_DATE, inLanguage: 'ko', author: { '@type': 'Organization', name: '타로첩' }, publisher: { '@type': 'Organization', name: '타로첩' }, mainEntityOfPage: SITE + url });
 const faq = (items) => ({ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: items.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: a } })) });
 const chips = (arr, cls) => `<div class="kw ${cls}">${arr.map((k) => `<span>${esc(k)}</span>`).join('')}</div>`;
 const cardCell = (c, cur) => `<a class="cc${cur ? ' cur' : ''}" href="${cUrl(c)}"><b>${esc(rankLabel(c))}</b><span>${esc(c.name)}</span><small>${esc(c.kw.up.slice(0, 2).join('·'))}</small></a>`;
@@ -486,7 +487,7 @@ ${todayBox()}
 fs.writeFileSync(path.join(OUT, 'index.json'), JSON.stringify(CARDS.map((c) => ({ t: c.name, e: c.en, u: cUrl(c), k: [c.en].concat(c.alt || [], c.kw.up.slice(0, 3)).join(' '), g: groupOf(c) }))));
 fs.writeFileSync(path.join(OUT, 'cards.json'), JSON.stringify(CARDS.map((c) => ({ s: c.slug, n: c.name, e: c.en, g: groupOf(c), r: rankLabel(c), a: c.arcana, su: c.suit || null, up: firstN(c.up, 2), rv: firstN(c.rev, 2), ku: c.kw.up, kr: c.kw.rev, yn: c.yesno, ynn: c.yesnoNote, ad: c.advice,
   t: Object.fromEntries(TOPICS.map((tp) => [tp.key, [firstN(c[tp.key].up, 2), firstN(c[tp.key].rev, 2)]])) }))));
-const sm = (list) => ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'].concat(list.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${BUILD_ISO}</lastmod>${u === '/daily/' || u === '/' ? '<changefreq>daily</changefreq>' : ''}</url>`)).concat(['</urlset>', '']).join('\n');
+const sm = (list) => ['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'].concat(list.map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${u === '/daily/' || u === '/' ? BUILD_ISO : CONTENT_DATE}</lastmod>${u === '/daily/' || u === '/' ? '<changefreq>daily</changefreq>' : ''}</url>`)).concat(['</urlset>', '']).join('\n');
 fs.writeFileSync(path.join(OUT, 'sitemap.xml'), sm(urls.filter((u) => !gNo(u))));   /* 구글용(robots.txt) */
 fs.writeFileSync(path.join(OUT, 'sitemap-all.xml'), sm(urls));   /* 전체 — 네이버·빙 제출용 */
 fs.writeFileSync(path.join(OUT, 'robots.txt'), `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
